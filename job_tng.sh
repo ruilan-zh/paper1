@@ -1,14 +1,14 @@
 #!/bin/bash -l
 
-#SBATCH --ntasks 128 #number of cores
+#SBATCH --ntasks 420 #number of cores
 #SBATCH -J shuffle_ps# job name
 #SBATCH --array=0 #Run 
 #SBATCH -o tmp/standard_output_file.%A.%a.out
 #SBATCH -e tmp/standard_error_file.%A.%a.err
-#SBATCH -p cosma8
+#SBATCH -p cosma7
 #SBATCH -A dp004 #project
 #SBATCH --exclusive
-#SBATCH -t 0:10:00
+#SBATCH -t 0:30:00
 #SBATCH --mail-type=END,FAIL #notifications for job done & fail
 #SBATCH --mail-user=zhang-ruilan@g.ecc.u-tokyo.ac.jp
 

@@ -4,10 +4,10 @@
 #SBATCH -J shuffle# job name
 #SBATCH -o tmp/standard_output_file.%A.%a.out
 #SBATCH -e tmp/standard_error_file.%A.%a.err
-#SBATCH -p cosma7-rp
+#SBATCH -p cosma7
 #SBATCH -A dp004 #project
 #SBATCH --exclusive
-#SBATCH -t 00:05:00
+#SBATCH -t 03:00:00
 #SBATCH --mail-type=END,FAIL #notifications for job done & fail
 #SBATCH --mail-user=zhang-ruilan@g.ecc.u-tokyo.ac.jp
 
@@ -25,11 +25,11 @@ module load gsl/2.5
 module load armforge/22.0.2
 module load python/3.6.5
 
-istart=0
-iend=100
-logMmin="11"
-logMmax="13.8"
-Nsplit=2
+istart=10
+iend=20
+logMmin="12.5"
+logMmax="13"
+Nsplit=1
 Nsplit2=1
 #istart=${SLURM_ARRAY_TASK_ID}
 #iend=$((SLURM_ARRAY_TASK_ID+1))

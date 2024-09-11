@@ -5,7 +5,7 @@
 #SBATCH --array=0 #Run 
 #SBATCH -o tmp/standard_output_file.%A.%a.out
 #SBATCH -e tmp/standard_error_file.%A.%a.err
-#SBATCH -p cosma7
+#SBATCH -p cosma8
 #SBATCH -A dp004 #project
 #SBATCH --exclusive
 #SBATCH -t 00:10:00

@@ -1,4 +1,5 @@
-import MyShuffle as shuffle
+#import MyShuffle as shuffle
+import MyShuffle_shuffle_sat_group_ps as shuffle
 import importlib
 importlib.reload(shuffle)
 import sys
@@ -25,13 +26,13 @@ Nsplit2= string2number(sys.argv[6])
 #shuffler = shuffle.Shuffler(ps_type="gal", object2shuffle="gal")
 #shuffler.bin_data(mhalo_min=12.5)
 
-shuffler = shuffle.Shuffler(ps_type="sat", object2shuffle="sat",include_bh=True, include_halo_structure=True, include_msat_sum=True, include_conc_proxy=True)
+shuffler = shuffle.Shuffler(ps_type="group", object2shuffle="sat",include_bh=True, include_halo_structure=True, include_msat_sum=True, include_conc_proxy=True)
 
 start_read = time.time()
-shuffler.bin_data(mhalo_min=logMmin, mhalo_max=logMmax)
+#shuffler.bin_data(mhalo_min=logMmin, mhalo_max=logMmax)
 #shuffler.bin_data(mhalo_min=logMmin)
-#shuffler.bin_data( mhalo_max=logMmax)
-#shuffler.bin_data()
+#shuffler.bin_data(mhalo_max=logMmax)
+shuffler.bin_data()
 
 end_read = time.time()
 

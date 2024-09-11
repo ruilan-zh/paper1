@@ -45,7 +45,7 @@ else:
 
 #tng_dir = f"/cosma7/data/dp004/dc-zhan5/TNG/snap{snapnum}/mvir/w_metallicity"
 #tng_dir = f"/cosma7/data/dp004/dc-zhan5/TNG/snap{snapnum}/w_metallicity_cent_flag=1"
-halo_type="tng_toy_sat"
+halo_type="tng_toy_gal_sum"
 
 
 if halo_type == "gal":
@@ -108,7 +108,9 @@ if halo_type == "gal":
             mask = (mhalo_tng > logMmin) & (mhalo_tng < logMmax)
     elif logMmax is not None:
         mask = (mhalo_tng > 10) & (mhalo_tng < logMmax)
-    #mask = (sfr_tng > sfr_lim)#(mhalo_tng <    13.5) & 
+    else:
+        mask = (mhalo_tng > 10) & (sfr_tng > -5)
+        #mask = (sfr_tng > sfr_lim)#(mhalo_tng <    13.5) & 
     mhalo_tng = mhalo_tng[mask]
     pos_tng = pos_tng[mask]
     sfr_tng = sfr_tng[mask]
@@ -135,9 +137,7 @@ elif halo_type == "group":
         mhalo_tng1 = tng_data1[:,0]
         pos_tng1 = tng_data1[:,1:4]
         sfr_tng1 = tng_data1[:,4]
-
-    #mask = (mhalo_tng1 > logMmin) 
-    #logMmax = 13.6
+    
     if logMmin is not None:
         if logMmax is None:
             mask = (mhalo_tng1 > 10) & (mhalo_tng1 > logMmin)
@@ -145,30 +145,15 @@ elif halo_type == "group":
             mask = (mhalo_tng1 > logMmin) & (mhalo_tng1 < logMmax)
     elif logMmax is not None:
         mask = (mhalo_tng1 > 10) & (mhalo_tng1 < logMmax)
-    #mask = (mhalo_tng1 > logMmin) & (mhalo_tng1 < logMmax)
-    #mask = sfr_tng1 < -3
+    else:
+        mask = (mhalo_tng1 > 10)
+
 
     mhalo_tng = mhalo_tng1[mask]
     pos_tng = pos_tng1[mask]
     sfr_tng = sfr_tng1[mask]
 
     
-    
-    #mask14 = np.argwhere(mhalo_tng > 14)
-    seed = 2
-    
-    #seed = int(sys.argv[2])
-    #np.random.seed(seed)
-    #for ihalo in mask14:
-#       sfr_tng[ihalo] = np.random.normal(2.4, 0.2)
-    #sfr_tng = np.where(mhalo_tng < 14, sfr_tng, 2.55)
-
-    """
-    mask = sfr_tng1 > -3
-    mhalo_tng = mhalo_tng1
-    pos_tng = pos_tng1
-    sfr_tng = np.where(mask, sfr_tng1, -3)
-    """
     
 elif halo_type == "cent":
     tng_data1 = np.loadtxt(f"{tng_dir}/sfr-halomass_central.txt")
@@ -219,6 +204,11 @@ elif halo_type == "sat" or halo_type =="sat_sum":
             mask = (mhalo_tng1 > logMmin) & (mhalo_tng1 < logMmax) & (sfr_tng1 > -5)
     elif logMmax is not None:
         mask = (mhalo_tng1 > 10) & (mhalo_tng1 < logMmax)
+    else:
+        if number_density:
+            mask = (mhalo_tng1 > 10) & (sfr_tng1 > 0)
+        else:
+            mask = (mhalo_tng1 > 10) 
     #mask = (mhalo_tng1 > logMmin) & (mhalo_tng1 < logMmax)
     #mask = sfr_tng1 < -3
 
@@ -261,12 +251,14 @@ elif halo_type == "sat_nfw_sum":
     mhalo_tng = mhalo_tng1[mask]
     pos_tng = pos_tng1[mask]
     sfr_tng = sfr_tng1[mask]
-elif halo_type == "tng_toy_sat":
+elif (halo_type == "tng_toy_sat") or (halo_type == "tng_toy_gal") :
 
     tng_dir = "halo_exclusion/nfw/tng_toy_models"
-    tng_data1 = np.loadtxt(f"{tng_dir}/shuffled_sats_r=0-0.5/logM13.0-13.1/50bins/gal_seed0.txt")
+    #tng_data1 = np.loadtxt(f"{tng_dir}/shuffled_sats_r=0-0.5/logM13.0-13.1/shuffle_individual//number_density/gal_seed0.txt")
+    #tng_data1 = np.loadtxt(f"{tng_dir}/number_density/logM13-13.1/logSFRmin1_sat.txt")
     #tng_data1 = np.loadtxt(f"{tng_dir}/shuffled_sats_r=0-0.5/logM13.0-13.1/30bins/number_density/gal_seed0.txt")
     #tng_data1 = np.loadtxt(f"{tng_dir}/sats_test.txt")
+    tng_data1 = np.loadtxt(f"{tng_dir}/r=0-0.5/logM13.0-13.1/gal.txt")
 
     if ihalo is True:
         mhalo_tng1 = tng_data1[:,1]
@@ -279,12 +271,13 @@ elif halo_type == "tng_toy_sat":
     pos_tng = pos_tng1[mask]
     sfr_tng = sfr_tng1[mask]
 
-elif halo_type == "tng_toy_sat_sum":
+elif (halo_type == "tng_toy_sat_sum") or (halo_type == "tng_toy_gal_sum"): 
 
     tng_dir = "halo_exclusion/nfw/tng_toy_models"
-    tng_data1 = np.loadtxt(f"{tng_dir}/shuffled_sats_r=0-0.5/logM13.0-13.1/50bins/sum_seed0.txt")
+    #tng_data1 = np.loadtxt(f"{tng_dir}/shuffled_sats_r=0-0.5/logM13.0-13.1/shuffle_individual/number_density/sum_seed0.txt")
+    #tng_data1 = np.loadtxt(f"{tng_dir}/number_density/logM13-13.1/logSFRmin1_sum.txt")
     #tng_data1 = np.loadtxt(f"{tng_dir}/shuffled_sats_r=0-0.5/logM13.0-13.1/30bins/number_density/sum_seed0.txt")
-    #tng_data1 = np.loadtxt(f"{tng_dir}/sats_test_sum.txt")
+    tng_data1 = np.loadtxt(f"{tng_dir}/r=0-0.5/logM13.0-13.1/gal_sum.txt")
 
     if ihalo is True:
         mhalo_tng1 = tng_data1[:,1]
@@ -428,7 +421,7 @@ interp = "tsc"
 weight = "I_nu"
 if number_density:
     weight = "Weight"
-    if (halo_type =="group") or (halo_type == "sat_sum") or (halo_type == "sat_nfw_sum") or (halo_type == "tng_toy_sat_sum"):
+    if (halo_type =="group") or (halo_type == "sat_sum") or (halo_type == "sat_nfw_sum") or (halo_type == "tng_toy_sat_sum")or (halo_type == "tng_toy_gal_sum"):
         weight = "I_nu"
 if interp == "nearest":
     mesh = arraycat.to_mesh(resampler="nearest", BoxSize=boxsize, Nmesh=Nmesh, weight=weight, interlaced=True)
@@ -465,25 +458,33 @@ if logMmin is not None:
         fname = f"{odir}/logM{logMmin:.1f}.pickle"
     elif logMmax is not None:
         #odir=f"ps_data/snap{snapnum}/{mass_type}/logM_range/{halo_type}"
-        odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/shuffled/r=0-0.5/50bins"
-        #odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}"
+        #odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/shuffled/r=0-0.5/shuffle_individual"
+        odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}"
 
         if number_density:
-            #odir=f"ps_data/snap{snapnum}/{mass_type}/number_density/{halo_type}/logM_range"
-            odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/shuffled/r=0-0.5/30bins/number_density"
+            #odir=f"ps_data/snap{snapnum}/{mass_type}/number_density/{halo_type}/logM_range/logM{logMmin:.1f}-{logMmax:.1f}"
+            odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/number_density"
+            #odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/shuffled/r=0-0.5/shuffle_individual/number_density"
             #odir=f"ps_data/snap{snapnum}/{mass_type}/tng_toy/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/r=0-0.5/number_density"
             #odir=f"ps_data/snap{snapnum}/{mass_type}/number_density/{halo_type}/logM_range"
             #odir=f"ps_data/snap{snapnum}/{mass_type}/number_density/{halo_type}/logM_range/logM{logMmin:.1f}-{logMmax:.1f}/weighted_c4_rvir0.5_n200"
             #odir=f"ps_data/snap{snapnum}/{mass_type}/number_density/{halo_type}/logM_range/logM{logMmin:.1f}-{logMmax:.1f}"
         #odir=f"ps_data/snap{snapnum}/{mass_type}/weighted_nfw/logM{logMmin:.1f}-{logMmax:.1f}/{halo_type}/weighted_c4_rvir0.5_n50/with_cent"
         #fname = f"{odir}/logM{logMmin:.1f}-{logMmax:.1f}.pickle"
-        fname = f"{odir}/seed0.pickle"
+        #fname = f"{odir}/seed0.pickle"
+        #fname = f"{odir}/logSFRmin1.pickle"
         #fname = f"{odir}/orig.pickle"
-        #fname = f"{odir}/r=0-0.5_test.pickle"
+        fname = f"{odir}/r=0-0.5.pickle"
 elif logMmax is not None:
     #odir=f"ps_data/snap{snapnum}/mvir/logMmax/{halo_type}"
     odir=f"ps_data/snap{snapnum}/{mass_type}/logMmax/{halo_type}"
     fname = f"{odir}/logM{logMmax:.1f}.pickle"
+else:
+    if number_density:
+        odir=f"ps_data/snap{snapnum}/{mass_type}/number_density/{halo_type}"
+    else:
+        odir=f"ps_data/snap{snapnum}/{mass_type}"
+    fname = f"{odir}/ps-intensity-{halo_type}_logM10.pickle"
 
 #fname = f"{odir}/snap{snapnum}/shuffled/ps-intensity-cent-logM10_dlogM0.1_seed0.pickle"
 #fname = f"{odir}/snap{snapnum}/mvir/shuffled/logM10_dlogM0.1/group/seed{seed}.pickle"
@@ -494,7 +495,6 @@ if not os.path.exists(odir):
     print("Directory created: ", odir)
 
 
-#fname = f"{odir}/ps-intensity-{halo_type}_logM10.pickle"
 with open(fname, "wb") as f: 
     pickle.dump(I_mean,f)
     pickle.dump(Pk,f)

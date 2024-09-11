@@ -2,10 +2,10 @@
 
 #SBATCH --ntasks 28 #number of cores
 #SBATCH -J shuffle_ps# job name
-#SBATCH --array=0 #Run 
+#SBATCH --array=10-19 #Run 
 #SBATCH -o tmp/standard_output_file.%A.%a.out
 #SBATCH -e tmp/standard_error_file.%A.%a.err
-#SBATCH -p cosma7-rp
+#SBATCH -p cosma7
 #SBATCH -A dp004 #project
 #SBATCH --exclusive
 #SBATCH -t 00:10:00
@@ -50,7 +50,7 @@ split_name=None
 
 #object2shuffle="sat"
 #object2shuffle="cent"
-object2shuffle="cent"
+object2shuffle="sat"
 #object2shuffle=None
 ps_type="group"
 

@@ -14,10 +14,10 @@ importlib.reload(ps)
 #sfr_lim = arr[index]
 
 snapnum=40
-ihalo = False
-sim = "tng100-1"
+ihalo = True
+#sim = "tng100-1"
 boxsize_eagle = 100*0.6777
-#sim = "tng300-1"
+sim = "tng300-1"
 SubhaloFlag=False
 metallicity=False
 #tng_dir = "/cosma7/data/dp004/dc-zhan5/tng-sfr"
@@ -178,7 +178,39 @@ elif halo_type == "cent":
     pos_tng = pos_tng1[mask]
     sfr_tng = sfr_tng1[mask]
 
+elif halo_type == "sat" or halo_type =="sat_sum":
+    if halo_type == "sat":
+        tng_data1 = np.loadtxt(f"{tng_dir}/sfr-halomass_satellite.txt")
+    elif halo_type =="sat_sum":
+        tng_data1 = np.loadtxt(f"{tng_dir}/sat_sfr_sum_logM10.txt")
 
+        if number_density:
+            tng_data1 = np.loadtxt(f"{tng_dir}/nsubs_w_sfr.txt")
+    #tng_data1 = np.loadtxt(f"halo_exclusion/random_halo_exclusion_2R=0.6_nsat15.txt")
+    #tng_data1 = np.loadtxt(f"{tng_dir}/sfr-halomass_central.txt")
+    
+    if ihalo is True:
+        mhalo_tng1 = tng_data1[:,1]
+        pos_tng1 = tng_data1[:,2:5]
+        sfr_tng1 = tng_data1[:,5]
+    else:
+        mhalo_tng1 = tng_data1[:,0]
+        pos_tng1 = tng_data1[:,1:4]
+        sfr_tng1 = tng_data1[:,4]
+
+    #mask = (mhalo_tng1 > logMmin) 
+    #logMmax = 13.6
+    if number_density:
+        if halo_type == "sat_sum":
+            sfr_tng1 -= 1
+    mask = (mhalo_tng1 > 10) 
+    
+    #mask = (mhalo_tng1 > logMmin) & (mhalo_tng1 < logMmax)
+    #mask = sfr_tng1 < -3
+
+    mhalo_tng = mhalo_tng1[mask]
+    pos_tng = pos_tng1[mask]
+    sfr_tng = sfr_tng1[mask]
 
 
 z = 1.5
@@ -314,7 +346,9 @@ print("cp2")
 #kmax = np.log10(nyq/2)
 
 # Compute 3D power spectrum
-r = FFTPower(mesh, mode='1d', dk=0.05, kmin=0.01)
+kmax=10
+dk = 0
+r = FFTPower(mesh, mode='1d', dk=dk, kmin=0.01, kmax=kmax)
 Pk = r.power
 #print(Pk)
 k = Pk.coords
@@ -331,7 +365,8 @@ print("3d", shotnoise)
 #halops_dicts[mass]["tng_3d"] = pinocchio_dict
 import pickle
 #odir=f"ps_data/snap{snapnum}/mvir/Nmesh{Nmesh}"
-odir=f"ps_data/snap{snapnum}/mvir/tng100-1"
+#odir=f"ps_data/snap{snapnum}/mvir/tng100-1"
+odir=f"ps_data/snap{snapnum}/mvir"
 
 #fname = f"{odir}/snap{snapnum}/shuffled/ps-intensity-cent-logM10_dlogM0.1_seed0.pickle"
 #fname = f"{odir}/snap{snapnum}/mvir/shuffled/logM10_dlogM0.1/group/seed{seed}.pickle"
@@ -343,7 +378,7 @@ if not os.path.exists(odir):
 
 
 #fname = f"{odir}/ps-intensity-cent_logM10.pickle"
-fname = f"{odir}/ps-intensity-{halo_type}_logM10.pickle"
+fname = f"{odir}/ps-intensity-{halo_type}_logM10_dk0_kmax10.pickle"
 #fname = f"{odir}/logM{logMmax}.pickle"
 #fname = f"{odir}/logSFR2.pickle"
 #fname = f"{odir}/seed0.pickle"
