@@ -1,30 +1,35 @@
 #!/bin/bash -l
 
-#SBATCH --ntasks 420 #number of cores
-#SBATCH -J shuffle_ps# job name
+#SBATCH --ntasks 28 #number of cores
+#SBATCH -J toy# job name
 #SBATCH --array=0 #Run 
 #SBATCH -o tmp/standard_output_file.%A.%a.out
 #SBATCH -e tmp/standard_error_file.%A.%a.err
-#SBATCH -p cosma7
+#SBATCH -p cosma7-rp
 #SBATCH -A dp004 #project
 #SBATCH --exclusive
-#SBATCH -t 0:30:00
+#SBATCH -t 0:10:00
 #SBATCH --mail-type=END,FAIL #notifications for job done & fail
 #SBATCH --mail-user=zhang-ruilan@g.ecc.u-tokyo.ac.jp
 
+set -e
 module purge
-#module load rockport-settings
-module load gnu_comp/11.1.0
-module load openmpi/4.1.1
+module load rockport-settings
+#module load gnu_comp/11.1.0
+#module load openmpi/4.1.1
 #module load gnu_comp
 #module load openmpi
 #module load intel_comp/2018
 #module load intel_mpi/2018
-module load fftw/3.3.9cosma7
+#module load fftw/3.3.9cosma7
 #module load fftw
-module load gsl/2.5
-module load armforge/22.0.2
-module load python/3.6.5
+#module load gsl/2.5
+#module load armforge/22.0.2
+#module load python/3.6.5
+#module load python/3.6.5-rocky9
+module load python/3.12.4 gnu_comp/13.1.0 openmpi/4.1.4 parallel_hdf5/1.12.0
+
+source ~/nbodykit_venv/bin/activate
 
 #istart=6
 #iend=8
@@ -36,10 +41,14 @@ module load python/3.6.5
 
 istart=${SLURM_ARRAY_TASK_ID}
 #mpirun -n $SLURM_NTASKS $RP_OPENMPI_ARGS python3 big_ps_for_loop1.py $SLURM_NTASKS  $istart
-mpirun -np $SLURM_NTASKS python3 big_ps_tng.py $SLURM_NTASKS 
+#mpirun -np $SLURM_NTASKS python3 big_ps_tng.py $SLURM_NTASKS 
 #mpirun -np $SLURM_NTASKS python3 big_ps_random.py $SLURM_NTASKS 
+#mpirun -np $SLURM_NTASKS $RP_OPENMPI_ARGS python3 big_ps_toy_model.py $SLURM_NTASKS 
+mpirun -np $SLURM_NTASKS $RP_OPENMPI_ARGS python3 big_ps_random.py $SLURM_NTASKS 
 #mpirun -np $SLURM_NTASKS python3 big_ps_filter.py $SLURM_NTASKS 
 #mpirun -np $SLURM_NTASKS python3 big_ps_sat_tests.py $SLURM_NTASKS 
 #mpirun -np $SLURM_NTASKS python3 big_ps_sat_redshifts.py $SLURM_NTASKS 
 #mpirun -np $SLURM_NTASKS python3 big_ps_ics.py $SLURM_NTASKS 
 #mpirun -np $SLURM_NTASKS python3 big_ps_gal_survey.py $SLURM_NTASKS #$istart
+
+deactivate

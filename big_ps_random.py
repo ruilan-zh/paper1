@@ -36,7 +36,8 @@ if halo_type == "gal":
     sfr_tng = np.concatenate((sfr_tng1, sfr_tng2))
 elif halo_type == "group":
     #tng_data1 = np.loadtxt(f"{tng_dir}/sfr-group-tng.txt")
-    tng_data1 = np.loadtxt(f"halo_exclusion/random_halo_exclusion_R1=0.4_R2=0.2.txt")
+    #tng_data1 = np.loadtxt(f"halo_exclusion/random_halo_exclusion_R1=0.4_R2=0.2.txt")
+    tng_data1 = np.loadtxt(f"halo_exclusion/random_seed0.txt")
     mhalo_tng1 = tng_data1[:,0]
     pos_tng1 = tng_data1[:,1:4]
     sfr_tng1 = tng_data1[:,4]
@@ -101,6 +102,7 @@ pixsize_sr = pixsize / (180/np.pi)**2 # convert from deg2 to sr
 boxsize_tng = 205
 Nmesh = int(boxsize_tng/pixlen_mpc_h)
 Nmesh+=1
+Nmesh = 50
 print("Nmeshxy:", Nmesh)
 pixlen_mpc_h = boxsize_tng / (Nmesh)
 print("New pixlen:", pixlen_mpc_h, "Mpc/h")
@@ -218,6 +220,7 @@ else:
 # shot noise
 #shotnoise = one_plus_delta.attrs["shotnoise"]
 
+
 # Compute 3D power spectrum
 #pinocchio_dict = ps.my_3dpower(delta_r, Nmesh, boxsize_tng, shotnoise)
 r = FFTPower(mesh, mode='1d', dk=0.05, kmin=0.01)
@@ -230,7 +233,7 @@ print("ncores:", ncore)
 
 Pk.attrs["shotnoise"] = Pk.attrs["shotnoise"]*ncore
 
-odir=f"ps_data/halo_exclusion"
+odir=f"ps_data/random_test"
 if not os.path.exists(odir):
     os.makedirs(odir,exist_ok=True)
     print("Directory created: ", odir)
@@ -240,6 +243,8 @@ if not os.path.exists(odir):
 
 #halops_dicts[mass]["tng_3d"] = pinocchio_dict
 import pickle
-with open(f"{odir}/R1=0.4_R2=0.2.pickle", "wb") as f:
+with open(f"{odir}/test_Nmesh{Nmesh}.pickle", "wb") as f:
     pickle.dump(I_mean,f)
     pickle.dump(Pk,f)
+
+
