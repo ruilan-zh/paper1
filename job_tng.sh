@@ -14,20 +14,7 @@
 
 set -e
 module purge
-module load rockport-settings
-#module load gnu_comp/11.1.0
-#module load openmpi/4.1.1
-#module load gnu_comp
-#module load openmpi
-#module load intel_comp/2018
-#module load intel_mpi/2018
-#module load fftw/3.3.9cosma7
-#module load fftw
-#module load gsl/2.5
-#module load armforge/22.0.2
-#module load python/3.6.5
-#module load python/3.6.5-rocky9
-module load python/3.12.4 gnu_comp/13.1.0 openmpi/4.1.4 parallel_hdf5/1.12.0
+nu_comp/13.1.0 openmpi/4.1.4 parallel_hdf5/1.12.0
 
 source ~/nbodykit_venv/bin/activate
 
